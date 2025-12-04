@@ -7,6 +7,7 @@ import numpy as np
 image = Image.open("C:/Users/Amazi/Downloads/image_steganographie.png")
 #*************************************************************************************************************************************
 
+text = "Il faut cultiver son jardin"
 
 # TRANFORMATION IMAGE EN TABLEAU
 image_array = np.array(image)
@@ -21,6 +22,9 @@ def get_image_even(image_array):
 # je soustrait le modulo 2 de chaque pixel (donc 1 si impair ou 0 si pair) --> tableau de pixel totalement pair
 # valeur entre 0 et 255 pour R, V et B  mais tous pair
 #*************************************************************************************************************************************
+
+
+
 
 
 # CONVERTIR TEXTE EN BINAIRE
@@ -52,16 +56,16 @@ def watermarking(image_array, text):
     for row in range(0, number_rows):
         for col in range(0, number_columns):
             for canal in range(0, number_canals):
-                if bit_index == len(binary_message):
-                    return even_array_image
-
-                else:
-                    even_array_image[row][col][canal] += binary_message.pop(0)  
+                if bit_index < len(binary_message):
+                    even_array_image[row][col][canal] += binary_message[bit_index]  
                     bit_index += 1
 
-    modified_image = Image.fromarray(even_array_image).save('image_watermarked.png')
-                    
-                    
+    Image.fromarray(even_array_image).save('image_watermarked.png')              
+    
+
+watermarking(image_array, text)
+print("Le message est bien caché dans image_watermarked.png") 
+             
             #**************************************************       
                         # counter = 0
                      # list_of_bits[counter]
@@ -76,11 +80,16 @@ def watermarking(image_array, text):
 # je recupère l'image en pair et le texte en binaire (list de bit)
 #  j'utilise un index pour parcourir le tableau
 # j'utiliser rasterscan via les boucle imbriquer pour ajouter ou non 1 ou 0 bit a chaque valeur R V B de chaque pixel en fonction du bianary_message
+    # problème rasterscan --> le message sera toujours en haut a guache de l'image ? (facilement identifiable)
 # je retourne le tableau modifier quand l'index arrive au bout du texte
 # je sauvegarde l'image
 
-def get_message_from_watermarking_image(image_array):
-    initial_binary_message = image_watermerked_array.flatten() % 2
+
+
+
+
+# def get_message_from_watermarking_image(image_array):
+#     initial_binary_message = image_watermerked_array.flatten() % 2
 
 
             
