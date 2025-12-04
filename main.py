@@ -31,7 +31,7 @@ def convert_text_to_binary(text):
     return list_of_bits
 
 # Fonction pour convertir le texte à cacher en binaire
-# pour chaque lettre dans le texte je transfome en son code ascii que je retransforme en bianire je suprimme 0b et je rajoute autant de 0 pour completr les 21 bit maximum pour un caractère ascii
+# pour chaque lettre dans le texte je transfome en son code ascii que je retransforme en bianire je suprimme 0b (slicing) et je rajoute autant de 0 pour completr les 21 bit maximum pour un caractère ascii
 # ensuite je concatene la liste transformer en binaire en préparer pour des pack de 21 bit en une chaine de caractère
 # je transforme la chaine de caractère en liste  d'entier  (lié au concept muable(liste) immuable(chaine de caractère))
 # je retourne la liste de bit => le texte sous forme de liste binaire chaque lettre en pack de 21 bit
@@ -42,29 +42,42 @@ def convert_text_to_binary(text):
 def watermarking(image_array, text):
     number_rows, number_columns, number_canals= image_array.shape  
     even_array_image = get_image_even(image_array)
-    list_of_bits = convert_text_to_binary(text)
+    binary_message = convert_text_to_binary(text)
 
-    # counter = 0
-    
+    bit_index = 0 
+    total_size_image = number_rows * number_columns * number_canals
+    if len(binary_message) > total_size_image:
+        print("Ecrit pas un roman le sang") 
+
     for row in range(0, number_rows):
         for col in range(0, number_columns):
-            for canal in range(number_canals):
-                even_array_image[row][col][canal] += list_of_bits.pop(0)   # list_of_bits[counter]
-    
+            for canal in range(0, number_canals):
+                if bit_index == len(binary_message):
+                    return even_array_image
+
+                else:
+                    even_array_image[row][col][canal] += binary_message.pop(0)  
+                    bit_index += 1
+
+    modified_image = Image.fromarray(even_array_image).save('image_watermarked.png')
+                    
+                    
+            #**************************************************       
+                        # counter = 0
+                     # list_of_bits[counter]
                 #   counter += 1
                     #  if counter == len(list_of_bits):
                     #     break
-
+            #**************************************************
     
     
-
-    if list_of_bits:
-        print("Texte trop long")
-
-
 # je prend l'image en tableau et le texte en binaire en parametre
-# 
-
+# je recupère les coordonnées du tableau (image) et je les variabilise (peut etre pas le bon terme)
+# je recupère l'image en pair et le texte en binaire (list de bit)
+#  j'utilise un index pour parcourir le tableau
+# j'utiliser rasterscan via les boucle imbriquer pour ajouter ou non 1 ou 0 bit a chaque valeur R V B de chaque pixel en fonction du bianary_message
+# je retourne le tableau modifier quand l'index arrive au bout du texte
+# je sauvegarde l'image
 
 def get_message_from_watermarking_image(image_array):
     initial_binary_message = image_watermerked_array.flatten() % 2
