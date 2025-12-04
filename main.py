@@ -1,5 +1,6 @@
 from PIL import Image
 import numpy as np 
+import string
 
 
 
@@ -24,8 +25,46 @@ def get_image_even(image_array):
 #*************************************************************************************************************************************
 
 
+# CHIFFREMENT CESAR
+def cesar_cipher(text, key, cipher=True):
+    alphabet = string.ascii_lowercase
+    crypted_text = ""
+
+    for caractere in text:
+        if caractere in alphabet:
+            position = alphabet.index(caractere)
+            new_position = (position + key) % len(alphabet) if cipher else (position - key) % len(alphabet)  # ou % 26
+            new_caracter = alphabet[new_position]
+            crypted_text += new_caracter      # --> ici on ajoute le crypted_texts a la chaine de cractère deja existante
+        else:
+            crypted_text += caractere
+    
+    return crypted_text
+
+# j'ai rajouter mon chiffrement de césar 
+# j'ai pris l'alphabet de 26 lettre
+#*************************************************************************************************************************************
 
 
+#CHIFFREMENT VIGENERE
+def vigenere_cipher(message, password, cipher=True):
+
+	list_of_keys = [ord(char) for char in password]
+	list_of_crypted_chars = []
+
+	for index, char in enumerate(message):
+
+		current_key = list_of_keys[index % len(list_of_keys)]
+		crypted_char = cesar_cipher(message=char, key=current_key, cipher=cipher)
+
+		list_of_crypted_chars.append(crypted_char)
+
+	crypted_message = "".join(list_of_crypted_chars)
+	
+	return crypted_message
+
+# 
+#*************************************************************************************************************************************
 
 # CONVERTIR TEXTE EN BINAIRE
 def convert_text_to_binary(text):
